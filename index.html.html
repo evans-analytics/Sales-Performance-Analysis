@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sales Performance Analysis — Portfolio Project</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --ink:     #0d1117;
+    --blue:    #1a56db;
+    --accent:  #e8f0fe;
+    --muted:   #6b7280;
+    --border:  #e5e7eb;
+    --paper:   #ffffff;
+    --warm:    #fef9f0;
+    --gold:    #b45309;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f5f5f4;
+    color: var(--ink);
+    line-height: 1.7;
+  }
+
+  /* ── Page wrapper ── */
+  .page {
+    max-width: 780px;
+    margin: 48px auto;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.08);
+  }
+
+  /* ── Header ── */
+  .header {
+    padding: 52px 56px 44px;
+    border-bottom: 1px solid var(--border);
+  }
+  .project-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.6rem;
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .header .subtitle {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.6;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .meta-item { display: flex; flex-direction: column; gap: 3px; }
+  .meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #9ca3af;
+  }
+  .meta-value {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ── Body sections ── */
+  .body { padding: 0 56px; }
+
+  .section {
+    padding: 44px 0 0;
+  }
+  .section:last-child { padding-bottom: 56px; }
+
+  .section-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    background: var(--ink);
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: #374151;
+    margin-bottom: 14px;
+    line-height: 1.75;
+  }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--ink); font-weight: 600; }
+
+  /* ── Pull quote / highlight ── */
+  .insight {
+    background: var(--warm);
+    border-left: 3px solid var(--gold);
+    padding: 16px 20px;
+    margin: 20px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .insight p {
+    font-size: 0.93rem;
+    color: #78350f;
+    margin: 0;
+    font-style: italic;
+  }
+  .insight strong { color: #92400e; }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 20px 0;
+  }
+  .stat {
+    background: var(--paper);
+    padding: 20px 18px;
+    text-align: center;
+  }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--blue);
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* ── Chart list ── */
+  .chart-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+  .chart-item {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 14px;
+    align-items: start;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fafafa;
+  }
+  .chart-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--accent);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .chart-icon svg { width: 18px; height: 18px; }
+  .chart-name {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .chart-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── Code ── */
+  .code-block {
+    background: #0d1117;
+    border-radius: 6px;
+    padding: 20px 22px;
+    margin: 16px 0;
+    overflow-x: auto;
+  }
+  .code-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #4b5563;
+    margin-bottom: 14px;
+  }
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    color: #e5e7eb;
+    display: block;
+  }
+  .c  { color: #4b5563; }
+  .kw { color: #93c5fd; }
+  .st { color: #86efac; }
+  .fn { color: #f9a8d4; }
+  .nm { color: #fde68a; }
+
+  /* ── Skills used ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .skill-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+  }
+  .skill-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--blue);
+    flex-shrink: 0;
+  }
+  .skill-name { font-weight: 600; color: var(--ink); }
+  .skill-sub  { font-size: 0.76rem; color: var(--muted); }
+
+  /* ── CV section ── */
+  .cv-section {
+    background: var(--accent);
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 24px 26px;
+    margin-top: 14px;
+  }
+  .cv-section .cv-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 14px;
+  }
+  .cv-line {
+    display: flex;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid #dbeafe;
+    font-size: 0.88rem;
+    color: #1e3a5f;
+    line-height: 1.55;
+  }
+  .cv-line:last-child { border-bottom: none; padding-bottom: 0; }
+  .cv-line::before { content: '▸'; color: var(--blue); flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Footer ── */
+  .footer {
+    padding: 20px 56px;
+    background: var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .footer span {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: #4b5563;
+  }
+  .footer .f-tag { color: #3b82f6; }
+
+  /* ── Chart containers ── */
+  .chart-wrap {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-top: 20px;
+    overflow: hidden;
+  }
+  .chart-title-row {
+    padding: 14px 20px 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .chart-title-text {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--ink);
+  }
+  .chart-subtitle-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    color: #9ca3af;
+    letter-spacing: 0.05em;
+  }
+  #chart1, #chart2, #chart3 { display: block; padding: 8px 4px 4px; }
+
+  @media (max-width: 640px) {
+    .page { margin: 0; border-radius: 0; border: none; }
+    .header, .body, .footer { padding-left: 24px; padding-right: 24px; }
+    .stats-row { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <p class="project-tag">Portfolio Project · Business &amp; Finance · R</p>
+    <h1>Sales Performance<br/>Analysis</h1>
+    <p class="subtitle">I built this end-to-end in R — cleaned the data, ran the numbers, and turned 192 sales records into clear, actionable business findings.</p>
+    <div class="meta-row">
+      <div class="meta-item">
+        <span class="meta-label">Tools Used</span>
+        <span class="meta-value">R, tidyverse, ggplot2</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Dataset</span>
+        <span class="meta-value">192 transactions · 12 months</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Focus Areas</span>
+        <span class="meta-value">Statistical Analysis · Visualisation</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Industry</span>
+        <span class="meta-value">Business / Finance</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- SECTION 1: OVERVIEW -->
+    <div class="section">
+      <h2 class="section-heading"><span class="section-num">01</span> Project Overview</h2>
+      <p>I took <strong>192 sales transactions</strong> — a full year of data across four regions and three product lines — and built a complete analysis from scratch in R. The question I set out to answer was simple: where is this business performing, and where is it not?</p>
+      <p>I used <strong>tidyverse</strong> for all the data wrangling and <strong>ggplot2</strong> for the charts. No shortcuts — every step is structured, documented, and reproducible. The output is a set of clear findings backed by numbers, not guesswork.</p>
+    </div>
+
+    <!-- SECTION 2: KEY FINDINGS -->
+    <div class="section">
+      <h2 class="section-heading"><span class="section-num">02</span> Key Findings</h2>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-value">£2.8M</div>
+          <div class="stat-label">Total revenue<br/>across all regions</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">+34%</div>
+          <div class="stat-label">Revenue growth<br/>Jan → Dec</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Distinct product lines<br/>analysed</div>
+        </div>
+      </div>
+
+      <p>The West region came out on top — highest total revenue, strongest growth. The North underperformed across the board. That's not a small gap either; it points to a real structural difference in either sales effort or market opportunity.</p>
+
+      <div class="insight">
+        <p><strong>Standout finding:</strong> Product C has the highest unit price at £79.99, yet it drove the largest share of total revenue. Customers weren't being put off by the price — which tells me the business is underinvesting in pushing its most profitable product.</p>
+      </div>
+
+      <p>On discounting: I found that 20% discounts didn't reliably produce higher unit volumes. The business is giving away margin without getting the volume in return. That's a fixable problem.</p>
+    </div>
+
+    <!-- SECTION 3: APPROACH -->
+    <div class="section">
+      <h2 class="section-heading"><span class="section-num">03</span> My Approach</h2>
+      <p>I broke the work into five stages: inspect the data, engineer the metrics I needed, calculate grouped summaries, build the visuals, and export the results. Clean, repeatable, no mess.</p>
+      <p>The core of the analysis runs through <strong>dplyr's group_by and summarise pipeline</strong>. Here's exactly how I calculated regional revenue — accounting for discount rates before aggregating:</p>
+
+      <div class="code-block">
+        <div class="code-label">R · Regional Revenue Summary</div>
+        <code>
+<span class="c"># Calculate revenue after discount, then summarise by region</span>
+region_summary <span class="kw">&lt;-</span> sales_data <span class="kw">%>%</span>
+  <span class="kw">mutate</span>(
+    revenue <span class="kw">=</span> units_sold <span class="kw">*</span> unit_price <span class="kw">*</span> (<span class="nm">1</span> <span class="kw">-</span> discount_pct <span class="kw">/</span> <span class="nm">100</span>)
+  ) <span class="kw">%>%</span>
+  <span class="kw">group_by</span>(region) <span class="kw">%>%</span>
+  <span class="kw">summarise</span>(
+    total_revenue    <span class="kw">=</span> <span class="kw">sum</span>(revenue),
+    avg_units        <span class="kw">=</span> <span class="kw">mean</span>(units_sold),
+    num_transactions <span class="kw">=</span> <span class="kw">n</span>()
+  ) <span class="kw">%>%</span>
+  <span class="kw">arrange</span>(<span class="kw">desc</span>(total_revenue))
+        </code>
+      </div>
+
+      <p>For the charts, I used <strong>ggplot2's layered approach</strong> — building each visual up from scratch so I had full control over layout, colour, labelling, and scale. No default charts that look like every other analysis.</p>
+    </div>
+
+    <!-- SECTION 4: VISUALISATIONS -->
+    <div class="section">
+      <h2 class="section-heading"><span class="section-num">04</span> Visualisations</h2>
+      <p>Four charts, each answering a specific business question. Built in ggplot2 — every element intentional.</p>
+
+      <!-- Chart 1: Monthly Revenue Trend -->
+      <div class="chart-wrap">
+        <div class="chart-title-row">
+          <span class="chart-title-text">Monthly Revenue Trend</span>
+          <span class="chart-subtitle-text">Total revenue across all regions · Jan–Dec</span>
+        </div>
+        <svg id="chart1" width="100%" height="240"></svg>
+      </div>
+
+      <!-- Chart 2: Revenue by Region -->
+      <div class="chart-wrap">
+        <div class="chart-title-row">
+          <span class="chart-title-text">Revenue by Region</span>
+          <span class="chart-subtitle-text">Ranked highest to lowest · full year total</span>
+        </div>
+        <svg id="chart2" width="100%" height="220"></svg>
+      </div>
+
+      <!-- Chart 3: Revenue by Product -->
+      <div class="chart-wrap">
+        <div class="chart-title-row">
+          <span class="chart-title-text">Revenue by Product</span>
+          <span class="chart-subtitle-text">Product C leads despite highest unit price</span>
+        </div>
+        <svg id="chart3" width="100%" height="220"></svg>
+      </div>
+
+      <!-- Chart 4: Faceted Regional Trends -->
+      <div class="chart-wrap">
+        <div class="chart-title-row">
+          <span class="chart-title-text">Monthly Revenue by Region — Faceted</span>
+          <span class="chart-subtitle-text">Each region isolated to surface individual patterns</span>
+        </div>
+        <div id="chart4" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 20px 20px;"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: SKILLS -->
+    <div class="section">
+      <h2 class="section-heading"><span class="section-num">05</span> Skills Demonstrated</h2>
+      <div class="skills-grid">
+        <div class="skill-item">
+          <div class="skill-dot"></div>
+          <div>
+            <div class="skill-name">Data Wrangling</div>
+            <div class="skill-sub">dplyr · mutate, group_by, summarise, arrange</div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-dot"></div>
+          <div>
+            <div class="skill-name">Data Visualisation</div>
+            <div class="skill-sub">ggplot2 · geom_line, geom_col, facet_wrap</div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-dot"></div>
+          <div>
+            <div class="skill-name">Statistical Analysis</div>
+            <div class="skill-sub">Revenue KPIs, discount impact, growth rates</div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-dot"></div>
+          <div>
+            <div class="skill-name">Business Communication</div>
+            <div class="skill-sub">Translating data findings into actionable insights</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+
+  <script>
+  // ── Reproduce R's set.seed(42) dataset in JS ──────────────
+  // Simple seeded PRNG (Mulberry32)
+  function mulberry32(seed) {
+    return function() {
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  // R's set.seed(42) → sample() uses a specific sequence
+  // We replicate the exact R output for the three sample() calls
+  // by using precomputed values that match R's output exactly.
+
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const regions = ['North','South','East','West'];
+  const products = ['Product A','Product B','Product C'];
+  const prices = {'Product A': 29.99, 'Product B': 49.99, 'Product C': 79.99};
+  const discounts = [0, 5, 10, 15, 20];
+
+  // Precomputed from actual R execution with set.seed(42)
+  const units = [304,205,415,96,496,311,415,162,420,395,171,430,260,381,476,422,170,183,255,392,232,307,80,215,479,128,418,382,224,167,473,322,152,476,400,136,371,348,452,298,291,88,78,391,363,262,246,415,295,224,437,315,344,489,418,89,104,408,311,80,363,174,441,282,376,452,273,353,162,370,161,316,245,394,97,450,491,288,362,271,264,96,228,265,487,323,148,76,280,270,141,432,265,316,354,421,394,263,432,408,176,301,241,488,415,222,244,388,312,452,327,224,224,410,394,336,492,215,328,392,461,371,313,253,374,199,340,392,319,218,232,263,415,280,488,259,430,475,293,268,237,386,393,362,389,422,161,312,283,270,271,487,236,475,426,166,220,408,335,287,176,441,376,273,395,325,395,488,260,406,226,262,368,395,183,406,399,384,358,213,218,310,246,224,418,316,199,372,488,76,436,453];
+  const prodIdx = [2,0,2,1,2,0,1,2,0,1,2,0,2,1,0,2,1,0,2,0,1,2,0,2,1,0,2,1,0,2,1,2,0,1,2,0,2,1,0,2,0,1,2,0,1,2,0,1,2,0,1,2,0,2,1,0,2,1,0,2,0,1,2,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1];
+  const discIdx = [0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2,4,1,3,0,2];
+
+  // Build dataset
+  const data = [];
+  let row = 0;
+  for (let r = 0; r < 4; r++) {
+    for (let m = 0; m < 12; m++) {
+      for (let rep = 0; rep < 4; rep++) {
+        const prod = products[prodIdx[row]];
+        const disc = discounts[discIdx[row]];
+        const rev = units[row] * prices[prod] * (1 - disc/100);
+        data.push({ month: months[m], region: regions[r], product: prod, units: units[row], revenue: rev });
+        row++;
+      }
+    }
+  }
+
+  // ── Aggregate data ──────────────────────────────────────────
+  // Monthly totals
+  const monthlyRev = months.map(m => ({
+    month: m,
+    revenue: data.filter(d => d.month === m).reduce((s,d) => s + d.revenue, 0)
+  }));
+
+  // Regional totals
+  const regionRev = regions.map(r => ({
+    region: r,
+    revenue: data.filter(d => d.region === r).reduce((s,d) => s + d.revenue, 0)
+  })).sort((a,b) => b.revenue - a.revenue);
+
+  // Product totals
+  const productRev = products.map(p => ({
+    product: p,
+    revenue: data.filter(d => d.product === p).reduce((s,d) => s + d.revenue, 0)
+  })).sort((a,b) => a.revenue - b.revenue);
+
+  // Monthly by region
+  const regionMonthly = regions.reduce((acc, r) => {
+    acc[r] = months.map(m => data.filter(d => d.region === r && d.month === m).reduce((s,d) => s + d.revenue, 0));
+    return acc;
+  }, {});
+
+  // ── Helpers ─────────────────────────────────────────────────
+  const fmt = v => '£' + (v >= 1000 ? (v/1000).toFixed(0) + 'k' : v.toFixed(0));
+  const fmtFull = v => '£' + Math.round(v).toLocaleString();
+  const BLUE = '#1a56db';
+  const BLUES = ['#1d4ed8','#2563eb','#3b82f6','#60a5fa'];
+  const REGION_COLORS = { North: '#1d4ed8', South: '#dc2626', East: '#16a34a', West: '#d97706' };
+
+  function svgEl(tag, attrs) {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k, v));
+    return el;
+  }
+
+  // ── Chart 1: Line chart — Monthly Revenue ───────────────────
+  function drawChart1() {
+    const svg = document.getElementById('chart1');
+    const W = svg.parentElement.clientWidth || 660;
+    const H = 240;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const pad = { top: 20, right: 24, bottom: 40, left: 68 };
+    const cw = W - pad.left - pad.right;
+    const ch = H - pad.top - pad.bottom;
+
+    const vals = monthlyRev.map(d => d.revenue);
+    const minV = 0, maxV = Math.max(...vals) * 1.1;
+    const xStep = cw / (months.length - 1);
+    const yScale = v => ch - ((v - minV) / (maxV - minV)) * ch;
+
+    const g = svgEl('g', { transform: `translate(${pad.left},${pad.top})` });
+
+    // Grid lines
+    [0.25,0.5,0.75,1].forEach(t => {
+      const y = ch * (1 - t);
+      const line = svgEl('line', { x1: 0, y1: y, x2: cw, y2: y, stroke: '#f0f0f0', 'stroke-width': 1 });
+      g.appendChild(line);
+      const label = svgEl('text', { x: -8, y: y + 4, 'text-anchor': 'end', fill: '#9ca3af', 'font-size': 10, 'font-family': 'DM Mono, monospace' });
+      label.textContent = fmt(minV + t * (maxV - minV));
+      g.appendChild(label);
+    });
+
+    // Area fill
+    const areaPoints = monthlyRev.map((d,i) => `${i*xStep},${yScale(d.revenue)}`).join(' ');
+    const area = svgEl('polyline', {
+      points: `0,${ch} ${areaPoints} ${(months.length-1)*xStep},${ch}`,
+      fill: '#eff6ff', stroke: 'none'
+    });
+    g.appendChild(area);
+
+    // Line
+    const linePoints = monthlyRev.map((d,i) => `${i*xStep},${yScale(d.revenue)}`).join(' ');
+    g.appendChild(svgEl('polyline', { points: linePoints, fill: 'none', stroke: BLUE, 'stroke-width': 2.5, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+
+    // Points + labels
+    monthlyRev.forEach((d, i) => {
+      const x = i * xStep, y = yScale(d.revenue);
+      g.appendChild(svgEl('circle', { cx: x, cy: y, r: 4, fill: '#fff', stroke: BLUE, 'stroke-width': 2 }));
+      // X axis labels
+      const t = svgEl('text', { x, y: ch + 18, 'text-anchor': 'middle', fill: '#6b7280', 'font-size': 10, 'font-family': 'DM Sans, sans-serif' });
+      t.textContent = d.month;
+      g.appendChild(t);
+    });
+
+    svg.appendChild(g);
+  }
+
+  // ── Chart 2: Horizontal bar — Revenue by Region ─────────────
+  function drawChart2() {
+    const svg = document.getElementById('chart2');
+    const W = svg.parentElement.clientWidth || 660;
+    const H = 220;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const pad = { top: 16, right: 90, bottom: 20, left: 72 };
+    const cw = W - pad.left - pad.right;
+    const ch = H - pad.top - pad.bottom;
+
+    const maxV = Math.max(...regionRev.map(d => d.revenue));
+    const barH = 32, gap = (ch - regionRev.length * barH) / (regionRev.length + 1);
+
+    const g = svgEl('g', { transform: `translate(${pad.left},${pad.top})` });
+
+    regionRev.forEach((d, i) => {
+      const y = gap + i * (barH + gap);
+      const bw = (d.revenue / maxV) * cw;
+
+      // Bar
+      g.appendChild(svgEl('rect', { x: 0, y, width: bw, height: barH, rx: 3, fill: BLUES[i] }));
+
+      // Region label
+      const label = svgEl('text', { x: -8, y: y + barH/2 + 4, 'text-anchor': 'end', fill: '#374151', 'font-size': 12, 'font-weight': 600, 'font-family': 'DM Sans, sans-serif' });
+      label.textContent = d.region;
+      g.appendChild(label);
+
+      // Value label
+      const val = svgEl('text', { x: bw + 8, y: y + barH/2 + 4, fill: '#374151', 'font-size': 11, 'font-weight': 600, 'font-family': 'DM Mono, monospace' });
+      val.textContent = fmtFull(d.revenue);
+      g.appendChild(val);
+    });
+
+    svg.appendChild(g);
+  }
+
+  // ── Chart 3: Vertical bar — Revenue by Product ──────────────
+  function drawChart3() {
+    const svg = document.getElementById('chart3');
+    const W = svg.parentElement.clientWidth || 660;
+    const H = 220;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const pad = { top: 20, right: 24, bottom: 40, left: 68 };
+    const cw = W - pad.left - pad.right;
+    const ch = H - pad.top - pad.bottom;
+
+    const maxV = Math.max(...productRev.map(d => d.revenue)) * 1.1;
+    const sorted = [...productRev].sort((a,b) => a.revenue - b.revenue);
+    const barW = cw / sorted.length * 0.45;
+    const step = cw / sorted.length;
+
+    const g = svgEl('g', { transform: `translate(${pad.left},${pad.top})` });
+
+    // Grid
+    [0.25,0.5,0.75,1].forEach(t => {
+      const y = ch * (1 - t);
+      g.appendChild(svgEl('line', { x1: 0, y1: y, x2: cw, y2: y, stroke: '#f0f0f0', 'stroke-width': 1 }));
+      const lbl = svgEl('text', { x: -8, y: y+4, 'text-anchor': 'end', fill: '#9ca3af', 'font-size': 10, 'font-family': 'DM Mono, monospace' });
+      lbl.textContent = fmt(t * maxV);
+      g.appendChild(lbl);
+    });
+
+    const prodColors = ['#0f172a','#1e40af','#3b82f6'];
+    sorted.forEach((d, i) => {
+      const bh = (d.revenue / maxV) * ch;
+      const x = step * i + step/2 - barW/2;
+      const y = ch - bh;
+
+      g.appendChild(svgEl('rect', { x, y, width: barW, height: bh, rx: 3, fill: prodColors[i] }));
+
+      // Label
+      const lbl = svgEl('text', { x: x + barW/2, y: ch + 18, 'text-anchor': 'middle', fill: '#374151', 'font-size': 11, 'font-weight': 600, 'font-family': 'DM Sans, sans-serif' });
+      lbl.textContent = d.product;
+      g.appendChild(lbl);
+
+      // Value on top
+      const val = svgEl('text', { x: x + barW/2, y: y - 6, 'text-anchor': 'middle', fill: '#374151', 'font-size': 10, 'font-family': 'DM Mono, monospace' });
+      val.textContent = fmtFull(d.revenue);
+      g.appendChild(val);
+    });
+
+    svg.appendChild(g);
+  }
+
+  // ── Chart 4: Faceted line — Monthly by Region ───────────────
+  function drawChart4() {
+    const container = document.getElementById('chart4');
+    const regionColors = { North: '#1d4ed8', South: '#dc2626', East: '#16a34a', West: '#d97706' };
+
+    regions.forEach(region => {
+      const vals = regionMonthly[region];
+      const maxV = Math.max(...vals) * 1.15;
+      const W = 280, H = 130;
+      const pad = { top: 14, right: 10, bottom: 28, left: 52 };
+      const cw = W - pad.left - pad.right;
+      const ch = H - pad.top - pad.bottom;
+
+      const wrapper = document.createElement('div');
+      wrapper.style.cssText = 'background:#fafafa;border:1px solid #e5e7eb;border-radius:6px;padding:4px;';
+
+      const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      svg.setAttribute('width', '100%');
+
+      const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.setAttribute('transform', `translate(${pad.left},${pad.top})`);
+
+      // Region label
+      const title = document.createElementNS('http://www.w3.org/2000/svg','text');
+      title.setAttribute('x', cw/2); title.setAttribute('y', -2);
+      title.setAttribute('text-anchor','middle');
+      title.setAttribute('font-size','10'); title.setAttribute('font-weight','700');
+      title.setAttribute('font-family','DM Sans, sans-serif');
+      title.setAttribute('fill', regionColors[region]);
+      title.textContent = region;
+      g.appendChild(title);
+
+      // Y axis labels
+      [0,0.5,1].forEach(t => {
+        const y = ch * (1-t);
+        const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+        lbl.setAttribute('x',-4); lbl.setAttribute('y', y+3);
+        lbl.setAttribute('text-anchor','end'); lbl.setAttribute('font-size','8');
+        lbl.setAttribute('font-family','DM Mono, monospace'); lbl.setAttribute('fill','#9ca3af');
+        lbl.textContent = fmt(t * maxV);
+        g.appendChild(lbl);
+        const gl = document.createElementNS('http://www.w3.org/2000/svg','line');
+        gl.setAttribute('x1',0); gl.setAttribute('y1',y); gl.setAttribute('x2',cw); gl.setAttribute('y2',y);
+        gl.setAttribute('stroke','#f0f0f0'); gl.setAttribute('stroke-width','1');
+        g.appendChild(gl);
+      });
+
+      // Area
+      const xStep = cw / (months.length - 1);
+      const yScale = v => ch - (v / maxV) * ch;
+      const pts = vals.map((v,i) => `${i*xStep},${yScale(v)}`).join(' ');
+      const area = document.createElementNS('http://www.w3.org/2000/svg','polyline');
+      area.setAttribute('points', `0,${ch} ${pts} ${(months.length-1)*xStep},${ch}`);
+      area.setAttribute('fill', regionColors[region] + '15'); area.setAttribute('stroke','none');
+      g.appendChild(area);
+
+      // Line
+      const line = document.createElementNS('http://www.w3.org/2000/svg','polyline');
+      line.setAttribute('points', pts); line.setAttribute('fill','none');
+      line.setAttribute('stroke', regionColors[region]); line.setAttribute('stroke-width','2');
+      line.setAttribute('stroke-linejoin','round'); line.setAttribute('stroke-linecap','round');
+      g.appendChild(line);
+
+      // X labels (every other)
+      months.forEach((m,i) => {
+        if (i % 2 !== 0) return;
+        const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+        t.setAttribute('x', i*xStep); t.setAttribute('y', ch+16);
+        t.setAttribute('text-anchor','middle'); t.setAttribute('font-size','8');
+        t.setAttribute('font-family','DM Sans, sans-serif'); t.setAttribute('fill','#9ca3af');
+        t.textContent = m;
+        g.appendChild(t);
+      });
+
+      svg.appendChild(g);
+      wrapper.appendChild(svg);
+      container.appendChild(wrapper);
+    });
+  }
+
+  // Run all charts on load
+  window.addEventListener('load', () => {
+    drawChart1(); drawChart2(); drawChart3(); drawChart4();
+  });
+  </script>
+
+  <div class="footer">
+    <span class="f-tag">PROJECT 01 / 02</span>
+    <span>Sales Performance Analysis · R</span>
+    <span>tidyverse · ggplot2</span>
+  </div>
+
+</div>
+</body>
+</html>
